@@ -1,0 +1,7 @@
+{
+  "name": "app-boilerplate",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue"
+}
