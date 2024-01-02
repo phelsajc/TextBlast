@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkapp_boilerplate"]=self["webpackChunkapp_boilerplate"]||[]).push([[843],{4843:function(e,t,n){n.r(t),n.d(t,{default:function(){return p}});var a=n(6252);function r(e,t){const n=(0,a.up)("base-layout");return(0,a.wg)(),(0,a.j4)(n,{"show-tool-bar-menu":!0},{default:(0,a.w5)((()=>[(0,a.Uk)(" Home client ")])),_:1})}var u=n(3744);const o={},l=(0,u.Z)(o,[["render",r]]);var p=l}}]);
+//# sourceMappingURL=843.8431bf8b.js.map
