@@ -20,14 +20,14 @@
             v-show="showMenuButton"
             color="primary"
           ></ion-menu-button>
-          <ion-text class="ml-4 font-weight-bold">{{ pageTitle }}</ion-text>
+          <ion-text class="ml-4 font-weight-bold">{{ pageTitle }} </ion-text>
         </ion-buttons>
         <ion-buttons slot="end" class="ml-auto">
           <slot name="actions-end"></slot>
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-    <ion-content :class="`ion-padding ${className}`" :scroll-events="true">
+    <ion-content :class="`ion-padding ${className}`" :scroll-events="true" :color="colorType">
       <slot />
     </ion-content>
   </ion-page>
@@ -53,6 +53,10 @@ const props = defineProps({
     required: false,
   },
   pageDefaultBackLink: {
+    type: String,
+    required: false,
+  },
+  colorType: {
     type: String,
     required: false,
   },

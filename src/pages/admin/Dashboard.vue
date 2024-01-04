@@ -1,15 +1,70 @@
 <template>
   <KeepAlive>
-    <base-layout :show-tool-bar-menu="true">
+    <base-layout :show-tool-bar-menu="true" color-type="secondary">
       <ion-card>
         <ion-card-header>
-          <ion-card-title>Filter</ion-card-title>
+          <ion-card-title>Message</ion-card-title>
           <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
         </ion-card-header>
 
         <ion-card-content>
-          <ion-grid size="12">
+          <ion-grid>
             <ion-row>
+              <ion-col size-lg="16">
+                <div>
+                  <ion-item>
+                    <ion-select
+                      label="Sent To"
+                      v-model="form.stns"
+                      placeholder="Select"
+                      @ionChange="selectStn($event)"
+                    >
+                      <ion-select-option v-for="e in stn_list" :value="e">{{
+                        e
+                      }}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </div>
+              </ion-col>
+            </ion-row>
+            
+            <ion-row>
+
+              <ion-col size-lg="16">
+                <div>
+                  <ion-item>
+                    <ion-select
+                      label="Template"
+                      v-model="form.stns"
+                      placeholder="Select"
+                      @ionChange="selectStn($event)"
+                    >
+                      <ion-select-option v-for="e in stn_list" :value="e">{{
+                        e
+                      }}</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </div>
+              </ion-col>
+
+            </ion-row>
+            
+            <ion-row>
+
+              <ion-col size-lg="12">
+                <div>
+                  <ion-radio-group value="i">
+                    <ion-item>
+                      <ion-radio value="i" justify="start">Immediet</ion-radio>
+                      <ion-radio value="s" justify="start">Scheduled</ion-radio>
+                    </ion-item>
+                  </ion-radio-group>
+                </div>
+              </ion-col>
+
+            </ion-row>
+            
+            <ion-row v-if="isScheduled">
               <ion-col size="12">
                 Date
                 <VueDatePicker
@@ -20,53 +75,36 @@
                 ></VueDatePicker
               ></ion-col>
             </ion-row>
-            <ion-row>
-              <ion-col size="12">
-                <ion-item>
-                  <ion-select
-                    label="Stations"
-                    v-model="form.stns"
-                    placeholder="Select"
-                    @ionChange="selectStn($event)"
-                    :multiple="true"
-                  >
-                    <ion-select-option v-for="e in stn_list" :value="e">{{
-                      e
-                    }}</ion-select-option>
-                  </ion-select>
-                </ion-item>
-              </ion-col>
-            </ion-row>
-            <ion-row>
+            
+           
+            <!-- <ion-row>
               <ion-col size="12">
                 <ion-item>
                   <ion-label>Total Regular Beds</ion-label>
                   <ion-badge color="success">{{ total_reg_beds }}</ion-badge>
                 </ion-item>
               </ion-col>
-            </ion-row>
+            </ion-row> -->
             <ion-row>
               <ion-col size="12">
-                <ion-button expand="block" @click="filter()">FIND</ion-button>
+                <ion-list>
+                  <ion-item>
+                    <ion-textarea label-placement="floating" value="">
+                      <div slot="label">
+                        Message <ion-text color="danger">(Required)</ion-text>
+                      </div>
+                    </ion-textarea>
+                  </ion-item>
+                </ion-list>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size="12">
+                <ion-button expand="block" @click="filter()">Save & Vlidate</ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>
-        </ion-card-content>
-      </ion-card>
-
-      <ion-card>
-        <ion-card-header>
-          <ion-card-title>Results</ion-card-title>
-        </ion-card-header>
-
-        <ion-card-content>
-          <ion-scroll scrollY="true">
-            <ion-list>
-              <ion-item v-for="e in censusResults" @click="redirect(e)">
-                <ion-label>{{ e.station }}</ion-label>
-              </ion-item>
-            </ion-list>
-          </ion-scroll>
         </ion-card-content>
       </ion-card>
     </base-layout>
@@ -78,8 +116,8 @@ import { ref, onMounted, onIonViewDidEnter, computed } from "vue";
 import moment from "moment";
 import Stns from "@/api/getStations";
 import Census from "@/api/getCensus";
-import { defineStore } from 'pinia'
-import { stationStore } from '../../store/station';
+import { defineStore } from "pinia";
+import { stationStore } from "../../store/station";
 import { useRouter } from "vue-router";
 
 export default {
@@ -93,8 +131,8 @@ export default {
     const stnInput = ref([]);
     const stnStore = stationStore();
     //const censusResults = stnStore.getStations;//ref(stnStore.getStations);
-    const censusResults = computed(() => stnStore.getStations)
-
+    const censusResults = computed(() => stnStore.getStations);
+    const isScheduled = ref(false);
     const form = ref({
       date: null,
       fdate: null,
@@ -133,7 +171,7 @@ export default {
 
     onMounted(async () => {
       await getResults();
-      console.log("stnStore.getStations")
+      console.log("stnStore.getStations");
     });
 
     const router = useRouter();
@@ -182,7 +220,7 @@ export default {
           console.log(stnStore.getStations) */
           //censusResults.value.push(stnStore.getStations);
           /* console.log(censusResults.value) */
-          console.log(stnStore.getStations)
+          console.log(stnStore.getStations);
         })
         .catch((err) => {
           console.log(err);
@@ -219,4 +257,6 @@ ion-list {
 ion-card .list-md {
   max-height: 290px !important;
 }
+
+
 </style>

@@ -1,5 +1,6 @@
 <template>
   <base-layout
+  color-type="dark"
   >
     <ion-row>
       <ion-col size="12">

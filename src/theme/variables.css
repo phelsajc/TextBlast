@@ -4,12 +4,19 @@ http://ionicframework.com/docs/theming/ */
 /** Ionic CSS Variables **/
 :root {
     /** primary **/
-    --ion-color-primary: #FF7F80;
+    /* --ion-color-primary: #FF7F80;
     --ion-color-primary-rgb: rgb(255, 127, 128);
     --ion-color-primary-contrast: #ffffff;
     --ion-color-primary-contrast-rgb: 0, 0, 0;
     --ion-color-primary-shade: #e95a5a;
-    --ion-color-primary-tint: #f79898;
+    --ion-color-primary-tint: #f79898; */
+
+    --ion-color-primary: #3880ff;
+    --ion-color-primary-rgb: rgb(56,128,255);
+    --ion-color-primary-contrast: #fff;
+    --ion-color-primary-contrast-rgb: 0, 0, 0;
+    --ion-color-primary-shade: #3171e0;
+    --ion-color-primary-tint: #4c8dff;
 
     
     --ion-color-blue: #3880ff;
@@ -82,6 +89,33 @@ http://ionicframework.com/docs/theming/ */
     --ion-color-light-contrast-rgb: 0, 0, 0;
     --ion-color-light-shade: #d7d8da;
     --ion-color-light-tint: #f5f6f9;
+
+    /** CUSTOM JC**/
+  /*   --ion-background-color: #0d56e7;
+	--ion-background-color-rgb: 13,86,231;
+ */
+/* 	--ion-text-color: #858080;
+	--ion-text-color-rgb: 133,128,128; */
+
+/* 	--ion-color-step-50: #1358e2;
+	--ion-color-step-100: #195add;
+	--ion-color-step-150: #1f5cd8;
+	--ion-color-step-200: #255ed2;
+	--ion-color-step-250: #2b61cd;
+	--ion-color-step-300: #3163c8;
+	--ion-color-step-350: #3765c3;
+	--ion-color-step-400: #3d67be;
+	--ion-color-step-450: #4369b9;
+	--ion-color-step-500: #496bb4;
+	--ion-color-step-550: #4f6dae;
+	--ion-color-step-600: #556fa9;
+	--ion-color-step-650: #5b71a4;
+	--ion-color-step-700: #61739f;
+	--ion-color-step-750: #67769a;
+	--ion-color-step-800: #6d7895;
+	--ion-color-step-850: #737a8f;
+	--ion-color-step-900: #797c8a;
+	--ion-color-step-950: #7f7e85; */
 }
 
 .ion-color-blue {

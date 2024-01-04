@@ -1,6 +1,6 @@
 {
-  "appId": "com.app.boilerplate",
-  "appName": "Ionic Vue Boilerplate",
+  "appId": "com.app.textBlast",
+  "appName": "TextBlast 2",
   "webDir": "dist",
   "npmClient": "npm",
   "cordova": {}
