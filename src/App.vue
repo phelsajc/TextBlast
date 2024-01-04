@@ -3,10 +3,7 @@
     <IonSplitPane content-id="main-content">
       <Menu />
       <!-- https://stackoverflow.com/a/64682862/12542704 -->
-      <ion-router-outlet
-        id="main-content"
-        :key="$route.fullPath"
-      ></ion-router-outlet>
+      <ion-router-outlet id="main-content" :key="$route.fullPath"></ion-router-outlet>
     </IonSplitPane>
   </IonApp>
 </template>
@@ -14,9 +11,165 @@
 <script setup>
 /* import { IonApp, IonRouterOutlet, IonSplitPane } from "@ionic/vue"; */
 import Menu from "./components/Menu.vue";
-import { onMounted, ref} from "vue";
+import { onMounted, ref } from "vue";
 import { Preferences } from "@capacitor/preferences";
-
+import {
+    personCircleOutline,
+    download,
+    lockClosedOutline,
+    logoGithub,
+    logoGoogle,
+    logoFacebook,
+    logoLinkedin,
+    mailOutline,
+    arrowBack,
+    homeOutline,
+    carOutline,
+    newspaperOutline,
+    ellipsisVerticalCircleOutline,
+    megaphoneOutline,
+    notificationsOutline,
+    createOutline,
+    documentLockOutline,
+    peopleOutline,
+    pricetagsOutline,
+    gridOutline,
+    cameraOutline,
+    documentsOutline,
+    chatbubblesOutline,
+    calculatorOutline,
+    buildOutline,
+    checkmarkCircleOutline,
+    bookOutline,
+    calendarOutline,
+    scanCircleOutline,
+    filterCircleOutline,
+    addCircleOutline,
+    businessOutline,
+    globeOutline,
+    timeOutline,
+    hourglassOutline,
+    eyeOutline,
+    eyeOffOutline,
+    radioButtonOnOutline,
+    closeCircleOutline,
+    chatbubbleEllipsesOutline,
+    sendOutline,
+    documentTextOutline,
+    notificationsCircleOutline,
+    alertOutline,
+    checkmarkOutline,
+    checkboxOutline,
+    closeOutline,
+    airplaneOutline,
+    refreshOutline,
+    pauseOutline,
+    playOutline,
+    checkmarkDoneOutline,
+    returnDownBackOutline,
+    arrowDownOutline,
+    searchCircleOutline,
+    scanOutline,
+    searchOutline,
+    peopleCircleOutline,
+    phonePortraitOutline,
+    addOutline,
+    imageOutline,
+    ellipsisHorizontal,
+    addCircle,
+    search,
+    shieldCheckmarkOutline,
+    images,
+    chevronForward,
+    arrowForwardCircle,
+    arrowForward,
+    menu,
+    removeOutline,
+    flameOutline,
+    radioOutline,
+    contractOutline,
+    pulseOutline,
+    logOutOutline,
+  } from 'ionicons/icons';
+import { addIcons } from "ionicons";
+addIcons({
+    'pulse-outline': pulseOutline,
+    'radio-outline': radioOutline,
+    'contract-outline': contractOutline,
+    'flame-outline': flameOutline,
+    'person-circle-outline': personCircleOutline,
+    'lock-closed-outline': lockClosedOutline,
+    'logo-github': logoGithub,
+    'logo-google': logoGoogle,
+    'logo-facebook': logoFacebook,
+    'logo-linkedin': logoLinkedin,
+    'mail-outline': mailOutline,
+    'arrow-back': arrowBack,
+    'home-outline': homeOutline,
+    'cart-outline': carOutline,
+    'newspaper-outline': newspaperOutline,
+    'ellipsis-vertical-circle-outline': ellipsisVerticalCircleOutline,
+    'megaphone-outline': megaphoneOutline,
+    'notifications-outline': notificationsOutline,
+    'create-outline': createOutline,
+    'document-lock-outline': documentLockOutline,
+    'people-outline': peopleOutline,
+    'pricetags-outline': pricetagsOutline,
+    'grid-outline': gridOutline,
+    'camera-outline': cameraOutline,
+    'documents-outline': documentsOutline,
+    'chatbubbles-outline': chatbubblesOutline,
+    'calculator-outline': calculatorOutline,
+    'build-outline': buildOutline,
+    'checkmark-circle-outline': checkmarkCircleOutline,
+    'book-outline': bookOutline,
+    'calendar-outline': calendarOutline,
+    'scan-circle-outline': scanCircleOutline,
+    'filter-circle-outline': filterCircleOutline,
+    'add-circle-outline': addCircleOutline,
+    'business-outline': businessOutline,
+    'globe-outline': globeOutline,
+    'time-outline': timeOutline,
+    'hourglass-outline': hourglassOutline,
+    'eye-outline': eyeOutline,
+    'eye-off-outline': eyeOffOutline,
+    'radio-button-on-outline': radioButtonOnOutline,
+    'close-circle-outline': closeCircleOutline,
+    'chatbubble-ellipses-outline': chatbubbleEllipsesOutline,
+    'send-outline': sendOutline,
+    'document-text-outline': documentTextOutline,
+    'notifications-circle-outline': notificationsCircleOutline,
+    'alert-outline': alertOutline,
+    'checkmark-outline': checkmarkOutline,
+    'checkbox-outline': checkboxOutline,
+    'close-outline': closeOutline,
+    'airplane-outline': airplaneOutline,
+    'refresh-outline': refreshOutline,
+    'pause-outline': pauseOutline,
+    'play-outline': playOutline,
+    'checkmark-done-outline': checkmarkDoneOutline,
+    'return-down-back-outline': returnDownBackOutline,
+    'arrow-down-outline': arrowDownOutline,
+    'search-circle-outline': searchCircleOutline,
+    'scan-outline': scanOutline,
+    'search-outline': searchOutline,
+    'people-circle-outline': peopleCircleOutline,
+    'phone-portrait-outline': phonePortraitOutline,
+    'add-outline': addOutline,
+    'image-outline': imageOutline,
+    'ellipsis-horizontal': ellipsisHorizontal,
+    'add-circle': addCircle,
+    'search': search,
+    'shield-checkmark-outline': shieldCheckmarkOutline,
+    'images': images,
+    'chevron-forward': chevronForward,
+    'arrow-forward-circle': arrowForwardCircle,
+    'arrow-forward': arrowForward,
+    'menu-outline': menu,
+    'remove-outline': removeOutline,
+    'download': download,
+    'log-out-outline': logOutOutline
+  });
 const isLoggedIn = ref(false);
 
 async function verifyIsLoggedIn() {
@@ -26,7 +179,6 @@ async function verifyIsLoggedIn() {
 
 onMounted(async () => {
   await verifyIsLoggedIn();
-  console.log("isLoggedIn.value: ",isLoggedIn.value)
+  console.log("isLoggedIn.value: ", isLoggedIn.value);
 });
-
 </script>

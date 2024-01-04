@@ -14,10 +14,7 @@
       text
     }}</ion-label>
     <ion-icon
-      v-if="hasIcon"
-      :slot="iconOnly ? 'icon-only' : 'start'"
-      :ios="iosIcon || icon"
-      :md="mdIcon || icon"
+      :md="icon"
     ></ion-icon>
     <ion-spinner
       v-if="isLoading"

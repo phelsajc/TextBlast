@@ -14,43 +14,43 @@
                 <div>
                   <ion-item>
                     <ion-select
-                      label="Sent To"
-                      v-model="form.stns"
+                      v-model="form.receiver"
                       placeholder="Select"
-                      @ionChange="selectStn($event)"
                     >
-                      <ion-select-option v-for="e in stn_list" :value="e">{{
-                        e
-                      }}</ion-select-option>
+                    <div slot="label">Sent To <ion-text color="danger">(Required)</ion-text></div>
+                      <ion-select-option
+                        v-for="e in Contact_list"
+                        :value="e.my_group_id"
+                        >{{ e.group_descr }}</ion-select-option
+                      >
                     </ion-select>
                   </ion-item>
                 </div>
               </ion-col>
             </ion-row>
-            
-            <ion-row>
 
+            <ion-row>
               <ion-col size-lg="16">
                 <div>
                   <ion-item>
                     <ion-select
-                      label="Template"
-                      v-model="form.stns"
+                      v-model="form.template"
                       placeholder="Select"
-                      @ionChange="selectStn($event)"
+                      @ionChange="selectTemplate($event)"
                     >
-                      <ion-select-option v-for="e in stn_list" :value="e">{{
-                        e
-                      }}</ion-select-option>
+                    <div slot="label">Templates <ion-text color="danger">(Required)</ion-text></div>
+                      <ion-select-option
+                        v-for="e in templates_list"
+                        :value="e.template_id"
+                        >{{ e.template_name }}</ion-select-option
+                      >
                     </ion-select>
                   </ion-item>
                 </div>
               </ion-col>
-
             </ion-row>
-            
-            <ion-row>
 
+            <!-- <ion-row>
               <ion-col size-lg="12">
                 <div>
                   <ion-radio-group value="i">
@@ -61,9 +61,8 @@
                   </ion-radio-group>
                 </div>
               </ion-col>
+            </ion-row> -->
 
-            </ion-row>
-            
             <ion-row v-if="isScheduled">
               <ion-col size="12">
                 Date
@@ -75,8 +74,7 @@
                 ></VueDatePicker
               ></ion-col>
             </ion-row>
-            
-           
+
             <!-- <ion-row>
               <ion-col size="12">
                 <ion-item>
@@ -89,7 +87,14 @@
               <ion-col size="12">
                 <ion-list>
                   <ion-item>
-                    <ion-textarea label-placement="floating" value="">
+                    <ion-textarea
+                      v-model="form.message"
+                      label-placement="floating"
+                      value=""
+                      :auto-grow="true"
+                      fill="outline"
+                      rows="10"
+                    >
                       <div slot="label">
                         Message <ion-text color="danger">(Required)</ion-text>
                       </div>
@@ -101,7 +106,9 @@
 
             <ion-row>
               <ion-col size="12">
-                <ion-button expand="block" @click="filter()">Save & Vlidate</ion-button>
+                <ion-button expand="block" @click="send()">
+                  <ion-icon name="send-outline"></ion-icon> &nbsp;Send</ion-button
+                >
               </ion-col>
             </ion-row>
           </ion-grid>
@@ -114,11 +121,13 @@
 <script>
 import { ref, onMounted, onIonViewDidEnter, computed } from "vue";
 import moment from "moment";
-import Stns from "@/api/getStations";
-import Census from "@/api/getCensus";
+import Msg from "@/api/sendMsg";
+import Templates from "@/api/getMyTemplates";
+import Contacts from "@/api/getMyContacts";
 import { defineStore } from "pinia";
 import { stationStore } from "../../store/station";
 import { useRouter } from "vue-router";
+import useToast from "../../composition/useToast";
 
 export default {
   setup() {
@@ -127,6 +136,8 @@ export default {
     const total_reg_beds = ref(0);
     const someData = ref("Hello from parent component");
     const stn_list = ref([]);
+    const templates_list = ref([]);
+    const Contact_list = ref([]);
     const stnVal = ref([]);
     const stnInput = ref([]);
     const stnStore = stationStore();
@@ -135,10 +146,11 @@ export default {
     const isScheduled = ref(false);
     const form = ref({
       date: null,
-      fdate: null,
-      tdate: null,
-      stns: null,
+      receiver: null,
+      template: null,
+      message: null,
     });
+    const { openToast } = useToast();
 
     const format = (date) => {
       const day = date.getDate();
@@ -147,31 +159,9 @@ export default {
       return `Selected date is ${day}/${month}/${year}`;
     };
 
-    function getResults() {
-      //showLoading()
-      stn_list.value.push("All");
-      Stns.list()
-        .then((response) => {
-          /* timeline_header.value = response.data
-        dismissLoading() */
-          response.data.data.forEach((element) => {
-            stn_list.value.push(element.station);
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          /* store.dispatch('toast/presentToast', {
-            m: err.message,
-            type: 'message'
-          })
-          dismissLoading() */
-        })
-        .finally(/* dismissLoading() */);
-    }
-
     onMounted(async () => {
-      await getResults();
-      console.log("stnStore.getStations");
+      await loadTemplates();
+      await loadContacts();
     });
 
     const router = useRouter();
@@ -185,8 +175,12 @@ export default {
       });
     }
 
-    async function selectStn(ev) {
-      if (ev.detail.value[0] == "All") {
+    async function selectTemplate(ev) {
+      console.log(ev);
+      const a = this.templates_list.find((e) => e.template_id == ev.detail.value);
+      console.log(a.template_descr);
+      this.form.message = a.template_descr;
+      /* if (ev.detail.value[0] == "All") {
         stnVal.value = [];
         stnVal.value = ["All"];
       } else {
@@ -198,29 +192,57 @@ export default {
             stnVal.value.push(element);
           });
         }
+      } */
+    }
+
+    function send() {
+      /* form.stnInput = stnVal.value;
+      form.value.fdate = moment(form.value.date[0]).format("YYYY-MM-DD");
+      form.value.tdate = moment(form.value.date[1]).format("YYYY-MM-DD"); */
+      if (
+        this.form.message != null &&
+        this.form.receiver != null &&
+        this.form.template != null
+      ) {
+        Msg.list(form.value)
+          .then((response) => {
+            this.form.receiver = null;
+            this.form.template = null;
+            this.form.message = null;
+            if(response.data.code==400){
+              openToast("Please check the mobile number must be a numeric.", "danger", "top");
+            }else{
+              openToast("Message successfully sent.", "success", "top");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+          .finally();
+      }else{
+            openToast("Supply all required fields.", "danger", "top");
       }
     }
 
-    function filter() {
-      form.stnInput = stnVal.value;
-      form.value.fdate = moment(form.value.date[0]).format("YYYY-MM-DD");
-      form.value.tdate = moment(form.value.date[1]).format("YYYY-MM-DD");
-      Census.list(form.value)
+    function loadTemplates() {
+      Templates.get()
         .then((response) => {
-          total_reg_beds.value = response.data.totalRegularBed;
-          //censusResults.value = [];
-          //censusResults.value.push(response.data.data);
-          //stnStore.stations(censusResults.value);
-          stnStore.stations(response.data.data);
-          /* response.data.data.forEach(element => {
-          }); */
-          /* console.log(response);
-          console.log(total_reg_beds.value);
-          console.log("stnStore.getStations 2")
-          console.log(stnStore.getStations) */
-          //censusResults.value.push(stnStore.getStations);
-          /* console.log(censusResults.value) */
-          console.log(stnStore.getStations);
+          response.data.data.forEach((element) => {
+            templates_list.value.push(element);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
+        })
+        .finally();
+    }
+
+    function loadContacts() {
+      Contacts.get()
+        .then((response) => {
+          response.data.data.forEach((element) => {
+            Contact_list.value.push(element);
+          });
         })
         .catch((err) => {
           console.log(err);
@@ -232,13 +254,16 @@ export default {
       redirect,
       datef,
       datet,
-      getResults,
-      selectStn,
+      selectTemplate,
       total_reg_beds,
       stn_list,
+      templates_list,
+      Contact_list,
       stnVal,
-      filter,
+      loadTemplates,
+      loadContacts,
       form,
+      send,
       censusResults,
     };
   },
@@ -257,6 +282,4 @@ ion-list {
 ion-card .list-md {
   max-height: 290px !important;
 }
-
-
 </style>

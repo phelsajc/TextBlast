@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">TextBlast 3</string>
-    <string name="title_activity_main">TextBlast  4</string>
+    <string name="app_name">TextBlast</string>
+    <string name="title_activity_main">TextBlast</string>
     <string name="package_name">com.app.textBlast</string>
     <string name="custom_url_scheme">com.app.textBlast</string>
 </resources>

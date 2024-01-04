@@ -1,6 +1,7 @@
 <template>
   <base-layout
   color-type="dark"
+  color-toolbar="dark"
   >
     <ion-row>
       <ion-col size="12">
@@ -109,8 +110,8 @@ const Icon = ref({
 });
 
 const fields = ref({
-  username: "admin",
-  password: "admin",
+  username: "jclucasan",
+  password: "V4jYZr@",
 });
 
 const errorMessages = ref({

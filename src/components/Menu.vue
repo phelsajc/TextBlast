@@ -95,7 +95,7 @@ const getUserName = computed(() => userStore.getUserName);
 const selectedIndex = ref(0);
 const isLoggedIn = ref(false);
 const router = useRouter();
-const userName = ref(user.value.data.name);// ref("Guest");
+const userName = isLoggedIn?ref(user.value.data.name):null;// ref("Guest");
 
 const Icon = ref({
   build,
@@ -121,7 +121,6 @@ onMounted(async () => {
   console.log("is logged: ",isLoggedIn.value)
   await mountMenu();
   await fillUserName();
-  console.log(user.value.data.name)
 });
 
 onBeforeUnmount(async () => {

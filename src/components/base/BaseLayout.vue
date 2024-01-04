@@ -1,7 +1,7 @@
 <template>
   <ion-page>
     <ion-header>
-      <ion-toolbar>
+      <ion-toolbar :color="colorToolbar">
         <ion-buttons slot="start" v-if="showToolBarMenu">
           <div v-if="pageDefaultBackLink">
             <ion-back-button
@@ -58,6 +58,11 @@ const props = defineProps({
   },
   colorType: {
     type: String,
+    required: false,
+  },
+  colorToolbar: {
+    type: String,
+    default: 'light',
     required: false,
   },
   showMenuButton: {

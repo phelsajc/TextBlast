@@ -1,4 +1,4 @@
-package com.app.boilerplate;
+package com.app.textblast;
 
 import com.getcapacitor.BridgeActivity;
 
