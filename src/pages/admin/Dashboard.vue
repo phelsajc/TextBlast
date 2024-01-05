@@ -13,11 +13,10 @@
               <ion-col size-lg="16">
                 <div>
                   <ion-item>
-                    <ion-select
-                      v-model="form.receiver"
-                      placeholder="Select"
-                    >
-                    <div slot="label">Sent To <ion-text color="danger">(Required)</ion-text></div>
+                    <ion-select v-model="form.receiver" placeholder="Select">
+                      <div slot="label">
+                        Sent To <ion-text color="danger">(Required)</ion-text>
+                      </div>
                       <ion-select-option
                         v-for="e in Contact_list"
                         :value="e.my_group_id"
@@ -38,7 +37,9 @@
                       placeholder="Select"
                       @ionChange="selectTemplate($event)"
                     >
-                    <div slot="label">Templates <ion-text color="danger">(Required)</ion-text></div>
+                      <div slot="label">
+                        Templates <ion-text color="danger">(Required)</ion-text>
+                      </div>
                       <ion-select-option
                         v-for="e in templates_list"
                         :value="e.template_id"
@@ -75,14 +76,6 @@
               ></ion-col>
             </ion-row>
 
-            <!-- <ion-row>
-              <ion-col size="12">
-                <ion-item>
-                  <ion-label>Total Regular Beds</ion-label>
-                  <ion-badge color="success">{{ total_reg_beds }}</ion-badge>
-                </ion-item>
-              </ion-col>
-            </ion-row> -->
             <ion-row>
               <ion-col size="12">
                 <ion-list>
@@ -128,14 +121,12 @@ import { defineStore } from "pinia";
 import { stationStore } from "../../store/station";
 import { useRouter } from "vue-router";
 import useToast from "../../composition/useToast";
+import { Preferences } from "@capacitor/preferences";
+import { useUserStore } from "../../store/user";
+import emitter from "../../plugins/emitter";
 
 export default {
   setup() {
-    const datef = ref();
-    const datet = ref();
-    const total_reg_beds = ref(0);
-    const someData = ref("Hello from parent component");
-    const stn_list = ref([]);
     const templates_list = ref([]);
     const Contact_list = ref([]);
     const stnVal = ref([]);
@@ -152,6 +143,7 @@ export default {
     });
     const { openToast } = useToast();
 
+    const userStore = useUserStore();
     const format = (date) => {
       const day = date.getDate();
       const month = date.getMonth() + 1;
@@ -180,19 +172,6 @@ export default {
       const a = this.templates_list.find((e) => e.template_id == ev.detail.value);
       console.log(a.template_descr);
       this.form.message = a.template_descr;
-      /* if (ev.detail.value[0] == "All") {
-        stnVal.value = [];
-        stnVal.value = ["All"];
-      } else {
-        var index = stnVal.value.indexOf("All");
-        if (index !== -1) {
-          stnVal.value.splice(index, 1);
-          stnVal.value = [];
-          await ev.detail.value.forEach((element) => {
-            stnVal.value.push(element);
-          });
-        }
-      } */
     }
 
     function send() {
@@ -209,18 +188,23 @@ export default {
             this.form.receiver = null;
             this.form.template = null;
             this.form.message = null;
-            if(response.data.code==400){
-              openToast("Please check the mobile number must be a numeric.", "danger", "top");
-            }else{
+            if (response.data.code == 400) {
+              openToast(
+                "Please check the mobile number must be a numeric.",
+                "danger",
+                "top"
+              );
+            } else {
               openToast("Message successfully sent.", "success", "top");
             }
           })
           .catch((err) => {
             console.log(err);
+          logout();
           })
           .finally();
-      }else{
-            openToast("Supply all required fields.", "danger", "top");
+      } else {
+        openToast("Supply all required fields.", "danger", "top");
       }
     }
 
@@ -233,6 +217,7 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+          logout();
         })
         .finally();
     }
@@ -246,17 +231,25 @@ export default {
         })
         .catch((err) => {
           console.log(err);
+          logout();
         })
         .finally();
     }
 
+    function logout() {
+      console.log("logout");
+      setTimeout(async () => {
+        await Preferences.clear();
+        userStore.cleanUserData();
+        emitter.emit("logged");
+        await router.push({ name: "login" });
+        openToast("Session End.", "danger", "top");
+      }, 1500);
+    }
+
     return {
       redirect,
-      datef,
-      datet,
       selectTemplate,
-      total_reg_beds,
-      stn_list,
       templates_list,
       Contact_list,
       stnVal,
@@ -264,6 +257,7 @@ export default {
       loadContacts,
       form,
       send,
+      logout,
       censusResults,
     };
   },

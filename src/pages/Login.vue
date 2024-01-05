@@ -56,7 +56,7 @@
       <ion-col size="12">
         <Button
           color="primary"
-          text="Login NOw"
+          text="Login"
           :icon="Icon.enterOutline"
           :is-loading="loading"
           @click="loginUser()"

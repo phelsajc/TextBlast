@@ -95,8 +95,9 @@ const getUserName = computed(() => userStore.getUserName);
 const selectedIndex = ref(0);
 const isLoggedIn = ref(false);
 const router = useRouter();
-const userName = isLoggedIn?ref(user.value.data.name):null;// ref("Guest");
+const userName =  ref(user.value.data.name);
 
+//userName=isLoggedIn.value?ref(user.value.data.name):3;
 const Icon = ref({
   build,
   paperPlane,
@@ -131,7 +132,10 @@ onBeforeUnmount(async () => {
 
 async function verifyIsLoggedIn() {
   const token = await Preferences.get({ key: "token" });
+  console.log('token')
+  console.log(token)
   isLoggedIn.value = !!token.value;
+  console.log('toekn status',isLoggedIn.value)
 }
 
 async function mountMenu() {
