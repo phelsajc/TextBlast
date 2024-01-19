@@ -2,7 +2,7 @@ import api from './index'
 
 export default {
     add(announcements) {
-        return api.post('mytemplates', announcements)
+        return api.post('saveTemplate', announcements)
     },
     get() {
         return api.get('mytemplates')
@@ -14,6 +14,6 @@ export default {
         return api.patch('mytemplates', announcements)
     },
     delete(id) {
-        return api.remove('mytemplates', id)
+        return api.delete('deleteTemplate/'+ id)
     },
 }

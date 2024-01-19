@@ -1,7 +1,7 @@
 import axios from "axios";
 import { Preferences } from "@capacitor/preferences";
 
-const baseURL = "https://station_census.rivermedcenter.net/api/";//process.env.VUE_APP_API_URL;
+const baseURL = "https://stationcensus.rivermedcenter.net/api/";//process.env.VUE_APP_API_URL;
 //const baseURL = 'https://pxwaitlist.rivermedcenter.net/api';//process.env.VUE_APP_API_URL;
 
 
@@ -24,10 +24,11 @@ api.interceptors.request.use(async (config) => {
  api.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.log("Error2")
     console.log(error)
-    if (error.response.status === 401) {
+    if (error.response.status === 401||error.response.status === 500) {
       console.log("Error1")
-      //window.location = "/logout";
+     // window.location = "/logout";
      // window.location = "/login";
     }
 

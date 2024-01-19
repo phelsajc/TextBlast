@@ -1,8 +1,8 @@
 import api from './index'
 
 export default {
-    add(announcements) {
-        return api.post('mycontacts', announcements)
+    add(data) {
+        return api.post('saveGroup', data)
     },
     get() {
         return api.get('mycontacts')
@@ -10,10 +10,13 @@ export default {
     list(params) {
         return api.post('mycontacts', params)
     },
-    update(announcements) {
-        return api.patch('mycontacts', announcements)
+    update(data) {
+        return api.patch('mycontacts', data)
     },
     delete(id) {
-        return api.remove('mycontacts', id)
+        return api.get('deleteGroup/'+ id)
     },
+    getDefault() {
+        return api.get('getDefault')
+    },    
 }

@@ -4,7 +4,9 @@ import {
   power,
   enter,
   call,
+  people,
   home,
+  readerOutline,
   alertCircle,
   nuclear,
 } from 'ionicons/icons';
@@ -83,16 +85,26 @@ export const useMenuStore = defineStore('menu', {
    */
   needAuth: [
     {
-      title: "Dashboard",
-      url: 'admin/dashboard' ,
+      title: "Message",
+      url: 'admin-dashboard' ,
       icon: home, 
+    },
+    {
+      title: "Groups",
+      url: 'groups' ,
+      icon: people, 
+    },
+    {
+      title: "Templates",
+      url: 'templates' ,
+      icon: readerOutline, 
     },
     {
       title: "Division",
       type: 2,
     },
     {
-      title: "Logout 1",
+      title: "Logout",
       url: "/logout",
       icon: power,
     }

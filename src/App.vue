@@ -89,11 +89,14 @@ import {
     radioOutline,
     contractOutline,
     pulseOutline,
+    trashOutline,
     logOutOutline,
+    saveOutline,
   } from 'ionicons/icons';
 import { addIcons } from "ionicons";
 addIcons({
     'pulse-outline': pulseOutline,
+    'trash-outline': trashOutline,
     'radio-outline': radioOutline,
     'contract-outline': contractOutline,
     'flame-outline': flameOutline,
@@ -156,6 +159,7 @@ addIcons({
     'people-circle-outline': peopleCircleOutline,
     'phone-portrait-outline': phonePortraitOutline,
     'add-outline': addOutline,
+    'save-outline': saveOutline,
     'image-outline': imageOutline,
     'ellipsis-horizontal': ellipsisHorizontal,
     'add-circle': addCircle,

@@ -2,8 +2,8 @@
   <ion-menu content-id="main-content" type="overlay">
     <ion-header>
       <ion-toolbar class="welcome-container" color="primary">
-    <span>Welcome {{ userName }} </span>
-      <!--   <Image style="width: 50px" src="assets/icon/logo.png" /> -->
+        <span>Welcome {{ userName }} </span>
+        <!--   <Image style="width: 50px" src="assets/icon/logo.png" /> -->
       </ion-toolbar>
     </ion-header>
     <ion-content>
@@ -30,16 +30,10 @@
               class="fs-16"
             ></ion-icon>
           </ion-item>
-          <span
-            v-else-if="menuItem.type === 2 && index !== appPages.length - 1"
-          >
+          <span v-else-if="menuItem.type === 2 && index !== appPages.length - 1">
             <hr />
           </span>
-          <span
-            v-else-if="
-              menuItem.type === 'category' && index !== appPages.length - 1
-            "
-          >
+          <span v-else-if="menuItem.type === 'category' && index !== appPages.length - 1">
             <ion-item>
               <h1 class="">
                 <b>{{ menuItem.title }}</b>
@@ -65,11 +59,10 @@ import {
   enter,
 } from "ionicons/icons";
 
-
 import { onBeforeUnmount, onMounted, ref, computed, reactive } from "vue";
 
 import { useRouter } from "vue-router";
-import { storeToRefs } from 'pinia';
+import { storeToRefs } from "pinia";
 
 import { Preferences } from "@capacitor/preferences";
 import { useMenuStore } from "../store/menu";
@@ -77,7 +70,7 @@ import { useUserStore } from "../store/user";
 import emitter from "../plugins/emitter";
 import Image from "../components/Image.vue";
 
-import { useLoginStore } from '@/store/login';
+import { useLoginStore } from "@/store/login";
 
 const authStore = useLoginStore();
 const { user } = storeToRefs(authStore);
@@ -95,7 +88,7 @@ const getUserName = computed(() => userStore.getUserName);
 const selectedIndex = ref(0);
 const isLoggedIn = ref(false);
 const router = useRouter();
-const userName =  ref(user.value.data.name);
+const userName = user.value!=null? ref(user.value.data.name):null;
 
 //userName=isLoggedIn.value?ref(user.value.data.name):3;
 const Icon = ref({
@@ -119,7 +112,7 @@ async function handleLogin() {
 
 onMounted(async () => {
   emitter.on("logged", handleLogin);
-  console.log("is logged: ",isLoggedIn.value)
+  console.log("is logged: ", isLoggedIn.value);
   await mountMenu();
   await fillUserName();
 });
@@ -132,10 +125,10 @@ onBeforeUnmount(async () => {
 
 async function verifyIsLoggedIn() {
   const token = await Preferences.get({ key: "token" });
-  console.log('token')
-  console.log(token)
+  console.log("token");
+  console.log(token);
   isLoggedIn.value = !!token.value;
-  console.log('toekn status',isLoggedIn.value)
+  console.log("toekn status", isLoggedIn.value);
 }
 
 async function mountMenu() {
@@ -160,13 +153,13 @@ function redirect(index, menuItem) {
     window.open(menuItem.link, "_blank");
     return;
   }
-
+  //alert(menuItem.url)
   router.push(menuItem.url);
 }
 
 async function fillUserName() {
   const name = await getUserName.value;
-  console.log(name.content)
+  console.log(name.content);
   if (!name) return;
 
   //userName.value =  name.split(" ")[0] || "Guest";

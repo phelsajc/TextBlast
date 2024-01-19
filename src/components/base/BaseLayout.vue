@@ -6,12 +6,12 @@
           <div v-if="pageDefaultBackLink">
             <ion-back-button
               v-if="!ignoreHistory"
-              text="Back"
+              text=""
               :default-href="pageDefaultBackLink"
             ></ion-back-button>
             <ion-back-button
               v-else
-              text="Back"
+              text=""
               default-href=""
               @click.prevent="back()"
             ></ion-back-button>
@@ -20,7 +20,7 @@
             v-show="showMenuButton"
             color="primary"
           ></ion-menu-button>
-          <ion-text class="ml-4 font-weight-bold">{{ pageTitle }} </ion-text>
+          &nbsp;<ion-text class="ml-4 font-weight-bold"> {{ pageTitle }} </ion-text>
         </ion-buttons>
         <ion-buttons slot="end" class="ml-auto">
           <slot name="actions-end"></slot>

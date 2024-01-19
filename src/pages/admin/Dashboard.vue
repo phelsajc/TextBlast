@@ -7,13 +7,18 @@
           <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
         </ion-card-header>
 
+        <IonLoading trigger="open-loading" message="Loading..." duration="3000" spinner="circles"></IonLoading>
         <ion-card-content>
           <ion-grid>
             <ion-row>
               <ion-col size-lg="16">
                 <div>
                   <ion-item>
-                    <ion-select v-model="form.receiver" placeholder="Select">
+                    <ion-select
+                      v-model="form.receiver"
+                      placeholder="Select"
+                      @ionChange="selectReceiver($event)"
+                    >
                       <div slot="label">
                         Sent To <ion-text color="danger">(Required)</ion-text>
                       </div>
@@ -37,9 +42,10 @@
                       placeholder="Select"
                       @ionChange="selectTemplate($event)"
                     >
-                      <div slot="label">
+                      <!-- <div slot="label">
                         Templates <ion-text color="danger">(Required)</ion-text>
-                      </div>
+                      </div> -->
+                      <div slot="label">Templates</div>
                       <ion-select-option
                         v-for="e in templates_list"
                         :value="e.template_id"
@@ -124,11 +130,16 @@ import useToast from "../../composition/useToast";
 import { Preferences } from "@capacitor/preferences";
 import { useUserStore } from "../../store/user";
 import emitter from "../../plugins/emitter";
+import {
+  loadingController,
+} from '@ionic/vue';
+
 
 export default {
   setup() {
     const templates_list = ref([]);
     const Contact_list = ref([]);
+    const Default_Contact_list = ref([]);
     const stnVal = ref([]);
     const stnInput = ref([]);
     const stnStore = stationStore();
@@ -140,6 +151,8 @@ export default {
       receiver: null,
       template: null,
       message: null,
+      isDefault: false,
+      defaultContacts: null,
     });
     const { openToast } = useToast();
 
@@ -151,12 +164,35 @@ export default {
       return `Selected date is ${day}/${month}/${year}`;
     };
 
+    async function showLoading() {
+      const load = await loadingController.create({
+        message: 'sending...',
+        backdropDismiss: true,
+        spinner: 'circles'
+      });
+      load.present();
+    }
+
+    const dismissLoading = async () => {
+      await loadingController.dismiss()
+    }
+
     onMounted(async () => {
       await loadTemplates();
-      await loadContacts();
+      await loadDefaultContacts();
+      //await loadContacts();
     });
 
     const router = useRouter();
+
+    function redirect(e) {
+      router.push({
+        name: "stations",
+        params: {
+          propKey: JSON.stringify(e),
+        },
+      });
+    }
 
     function redirect(e) {
       router.push({
@@ -174,14 +210,32 @@ export default {
       this.form.message = a.template_descr;
     }
 
+    async function selectReceiver(ev) {
+      console.log(ev.detail.value);
+      console.log(this.Contact_list);
+      const a = this.Contact_list.find((e) => e.group_descr == ev.detail.value);
+      console.log(a);
+      if (a) {
+        this.form.isDefault = true;
+        this.form.defaultContacts = a.group_numbers;
+      }else{
+        this.form.isDefault = false;
+        this.form.defaultContacts = null;
+      }
+    }
+
     function send() {
+      showLoading()
       /* form.stnInput = stnVal.value;
       form.value.fdate = moment(form.value.date[0]).format("YYYY-MM-DD");
       form.value.tdate = moment(form.value.date[1]).format("YYYY-MM-DD"); */
-      if (
+      /* if (
         this.form.message != null &&
         this.form.receiver != null &&
         this.form.template != null
+      ) */ if (
+        this.form.message != null &&
+        this.form.receiver != null
       ) {
         Msg.list(form.value)
           .then((response) => {
@@ -197,10 +251,11 @@ export default {
             } else {
               openToast("Message successfully sent.", "success", "top");
             }
+            dismissLoading()
           })
           .catch((err) => {
             console.log(err);
-          logout();
+            dismissLoading()
           })
           .finally();
       } else {
@@ -217,7 +272,19 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          logout();
+        })
+        .finally();
+    }
+
+    function loadDefaultContacts() {
+      Contacts.getDefault()
+        .then((response) => {
+          response.data.data.forEach((element) => {
+            Contact_list.value.push(element);
+          });
+        })
+        .catch((err) => {
+          console.log(err);
         })
         .finally();
     }
@@ -231,34 +298,25 @@ export default {
         })
         .catch((err) => {
           console.log(err);
-          logout();
         })
         .finally();
-    }
-
-    function logout() {
-      console.log("logout");
-      setTimeout(async () => {
-        await Preferences.clear();
-        userStore.cleanUserData();
-        emitter.emit("logged");
-        await router.push({ name: "login" });
-        openToast("Session End.", "danger", "top");
-      }, 1500);
     }
 
     return {
       redirect,
       selectTemplate,
+      loadDefaultContacts,
       templates_list,
       Contact_list,
       stnVal,
       loadTemplates,
       loadContacts,
+      selectReceiver,
       form,
       send,
-      logout,
       censusResults,
+      showLoading,
+      dismissLoading,
     };
   },
 };

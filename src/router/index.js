@@ -65,6 +65,38 @@ const routes = [
     }) */
     //props:true,
   },
+  {
+    path: "/manageGroup:propKey*",
+    //path: "/stations",
+    name: "Manage-group",
+    component: () => import("../modal/groupModal.vue"),
+    //props: (route) => ({ propKey: route.params.propKey }),
+    /* props: (route) => ({
+        ...route.params
+    }) */
+    //props:true,
+  },
+  {
+    path: "/groups",
+    name: "Groups",
+    component: () => import("../pages/Groups.vue"),
+  },
+  {
+    path: "/templates",
+    name: "Templates",
+    component: () => import("../pages/Templates.vue"),
+  },
+  {
+    path: "/manageTemplates:propKey*",
+    //path: "/stations",
+    name: "Manage-template",
+    component: () => import("../modal/tmpModal.vue"),
+    //props: (route) => ({ propKey: route.params.propKey }),
+    /* props: (route) => ({
+        ...route.params
+    }) */
+    //props:true,
+  },
 ];
 
 const router = createRouter({

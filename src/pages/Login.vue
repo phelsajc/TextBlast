@@ -5,7 +5,7 @@
   >
     <ion-row>
       <ion-col size="12">
-        <Image style="height: 200px" src="assets/icon/logo.png" />
+        <Image style="height: 200px"/>
       </ion-col>
     </ion-row>
     <ion-row>
@@ -63,6 +63,10 @@
         />
       </ion-col>
     </ion-row>
+    
+    <ion-col size="12">
+        <Image style="height: 200px" :src="'assets/dpodps.png'" />
+      </ion-col>
     <!-- <ion-row class="ion-text-center">
       <ion-col size="12">
         <ion-text color="tertiary" class="pointer" @click="redirectToRecoveryPassword()">
@@ -71,6 +75,7 @@
       </ion-col>
     </ion-row> -->
   </base-layout>
+  
 </template>
 
 <script setup>
@@ -110,8 +115,8 @@ const Icon = ref({
 });
 
 const fields = ref({
-  username: "jclucasan",
-  password: "V4jYZr@",
+  username: "",
+  password: "",
 });
 
 const errorMessages = ref({
@@ -144,7 +149,7 @@ const loading = ref(false);
       loading.value = false;
         })
   } catch (error) {
-    alert(0)
+    //alert(0)
   }
 
       /* .catch((ex) => {
