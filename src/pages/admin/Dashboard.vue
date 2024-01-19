@@ -7,7 +7,12 @@
           <!-- <ion-card-subtitle>Card Subtitle</ion-card-subtitle> -->
         </ion-card-header>
 
-        <IonLoading trigger="open-loading" message="Loading..." duration="3000" spinner="circles"></IonLoading>
+        <IonLoading
+          trigger="open-loading"
+          message="Loading..."
+          duration="3000"
+          spinner="circles"
+        ></IonLoading>
         <ion-card-content>
           <ion-grid>
             <ion-row>
@@ -122,7 +127,7 @@ import { ref, onMounted, onIonViewDidEnter, computed } from "vue";
 import moment from "moment";
 import Msg from "@/api/sendMsg";
 import Templates from "@/api/getMyTemplates";
-import Contacts from "@/api/getMyContacts";
+import MyContacts from "@/api/getMyContacts";
 import { defineStore } from "pinia";
 import { stationStore } from "../../store/station";
 import { useRouter } from "vue-router";
@@ -130,10 +135,8 @@ import useToast from "../../composition/useToast";
 import { Preferences } from "@capacitor/preferences";
 import { useUserStore } from "../../store/user";
 import emitter from "../../plugins/emitter";
-import {
-  loadingController,
-} from '@ionic/vue';
-
+import { loadingController } from "@ionic/vue";
+//import { Contacts } from "@capacitor-community/contacts";
 
 export default {
   setup() {
@@ -164,22 +167,45 @@ export default {
       return `Selected date is ${day}/${month}/${year}`;
     };
 
+    const retrieveListOfContacts = ref([]);
+
     async function showLoading() {
       const load = await loadingController.create({
-        message: 'sending...',
+        message: "sending...",
         backdropDismiss: true,
-        spinner: 'circles'
+        spinner: "circles",
       });
       load.present();
     }
 
     const dismissLoading = async () => {
-      await loadingController.dismiss()
-    }
+      await loadingController.dismiss();
+    };
+
+    /* const retrieveListOfContacts = async () => {
+      const projection = {
+        name: true,
+        phones: true,
+        postalAddresses: true,
+      };
+
+      const result = await Contacts.getContacts({
+        projection,
+      });
+    };
+ */
+    /* async function loadC() {
+      await Contacts.getContacts().then((results) => {
+        this.retrieveListOfContacts = results.contacts
+        console.log(this.retrieveListOfContacts);
+      });
+    } */
 
     onMounted(async () => {
       await loadTemplates();
       await loadDefaultContacts();
+      console.log(retrieveListOfContacts);
+      //loadC();
       //await loadContacts();
     });
 
@@ -218,14 +244,14 @@ export default {
       if (a) {
         this.form.isDefault = true;
         this.form.defaultContacts = a.group_numbers;
-      }else{
+      } else {
         this.form.isDefault = false;
         this.form.defaultContacts = null;
       }
     }
 
     function send() {
-      showLoading()
+      showLoading();
       /* form.stnInput = stnVal.value;
       form.value.fdate = moment(form.value.date[0]).format("YYYY-MM-DD");
       form.value.tdate = moment(form.value.date[1]).format("YYYY-MM-DD"); */
@@ -251,11 +277,11 @@ export default {
             } else {
               openToast("Message successfully sent.", "success", "top");
             }
-            dismissLoading()
+            dismissLoading();
           })
           .catch((err) => {
             console.log(err);
-            dismissLoading()
+            dismissLoading();
           })
           .finally();
       } else {
@@ -277,7 +303,7 @@ export default {
     }
 
     function loadDefaultContacts() {
-      Contacts.getDefault()
+      MyContacts.getDefault()
         .then((response) => {
           response.data.data.forEach((element) => {
             Contact_list.value.push(element);
@@ -290,7 +316,7 @@ export default {
     }
 
     function loadContacts() {
-      Contacts.get()
+      MyContacts.get()
         .then((response) => {
           response.data.data.forEach((element) => {
             Contact_list.value.push(element);
